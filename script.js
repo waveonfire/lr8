@@ -1,41 +1,72 @@
+let playerName = '';
+let playerScore = 0;
+let computerScore = 0;
+let roundsWonByPlayer = 0;
+let roundsWonByComputer = 0;
 
-let reels = document.querySelectorAll('.reel img'); 
-const spinButton = document.getElementById('spinButton'); 
-const emojis = ["cherries.png", "watermelon.png", "lemon.png"];
+document.getElementById("startbutton").addEventListener('click', startGame);
+document.getElementById("nextround").addEventListener('click', nextRound);
 
-function spinReels() {
-    result.textContent = ''; 
-    const spinDuration = 1000;
-    const spinSpeed = 50; 
-    let spinInterval = []; 
+function startGame() {
+    playerName = document.getElementById("username").value;
+    document.getElementById("playername").innerText = playerName;
+    if (playerName === '') {
+        playerName = "User";
+    }
 
-    reels.forEach((reel, index) => {
-        spinInterval[index] = setInterval(() => {
-            const randomImage = emojis[Math.floor(Math.random() * emojis.length)]; 
-            reel.src = randomImage; 
-        }, spinSpeed);
-    });
-
-    setTimeout(() => {
-        reels.forEach((_, index) => clearInterval(spinInterval[index])); 
-        checkResult(); 
-    }, spinDuration);
+    document.querySelector('.intro').style.display = 'none';
+    document.querySelector('.gameblock').style.display = 'flex';
+    nextRound();
 }
+function nextRound() {
+    playerScore = Math.floor((Math.random() * 100) + 1);
+    computerScore = Math.floor((Math.random() * 100) + 1);
 
-function checkResult() {
-    const values = Array.from(reels).map(reel => reel.src); 
-    if (values[0] == values[3] &&  values[3] == values[6]) {
-        result.textContent = "Ви перемогли!";
+    document.getElementById('player1points').innerText = playerScore;
+    document.getElementById('player2points').innerText = computerScore;
+
+    if (playerScore > computerScore) 
+    {
+        roundsWonByPlayer++;
+        document.getElementById('player1score').innerText = roundsWonByPlayer;
+    } 
+    else if (computerScore > playerScore) 
+    {
+        roundsWonByComputer++;
+        document.getElementById('player2score').innerText = roundsWonByComputer;
+    } 
+    else 
+    {
+        roundsWonByPlayer++;
+        document.getElementById('player1score').innerText = roundsWonByPlayer;
+        roundsWonByComputer++;
+        document.getElementById('player2score').innerText = roundsWonByComputer;
     }
-    else if(values[1] == values[4] &&  values[4] == values[7]){
-        result.textContent = "Ви перемогли!";
-    }
-    else if(values[2] == values[5] &&  values[5] == values[8]){
-        result.textContent = "Ви перемогли!";
-    }
-    else {
-        result.textContent = "Спробуйте знову";
+
+    if (roundsWonByPlayer === 3) 
+    {
+        setTimeout(() => {
+            setTimeout(() => {
+                alert(`${playerName} стає переможцем! Вітаємо!`);
+                resetGame();
+            }, 200); 
+        }, 0); 
+    } 
+    else if (roundsWonByComputer === 3) 
+    {
+        setTimeout(() => {
+            setTimeout(() => {
+                alert(`Комп'ютер стає переможцем! Спробуйте ще раз!`);
+                resetGame();
+            }, 200); 
+        }, 0); 
     }
 }
-
-spinButton.addEventListener('click', spinReels);
+function resetGame() {
+    roundsWonByPlayer = 0;
+    roundsWonByComputer = 0;
+    document.getElementById('player1score').innerText = roundsWonByPlayer;
+    document.getElementById('player2score').innerText = roundsWonByComputer;
+    document.getElementById('player1points').innerText = 0;
+    document.getElementById('player2points').innerText = 0;
+}
